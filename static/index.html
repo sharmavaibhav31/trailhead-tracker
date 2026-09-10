@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Trailhead Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <p class="ledger-no">TRAINING RECORD</p>
+    <h1>Trailhead Tracker</h1>
+    <p class="masthead-sub">Cross-checks the 6-week Salesforce training calendar against a
+      trainee's public Trailhead badges, so nobody has to click through every module by hand.</p>
+  </div>
+</header>
+
+<main>
+
+  <section class="lookup-panel" aria-label="Look up a trainee">
+    <form id="lookup-form">
+      <label for="profile-input">Trainee's public Trailhead profile</label>
+      <div class="lookup-row">
+        <input
+          id="profile-input"
+          type="text"
+          placeholder="https://www.salesforce.com/trailblazer/jsmith  (or just the handle)"
+          autocomplete="off"
+        />
+        <button type="submit" id="check-btn">Check progress</button>
+      </div>
+      <button type="button" id="demo-btn" class="link-btn">Try it with a demo profile instead &rarr;</button>
+    </form>
+    <p id="lookup-error" class="lookup-error" hidden></p>
+  </section>
+
+  <section id="profile-summary" class="profile-summary" hidden></section>
+
+  <section id="overall-progress" class="overall-progress" hidden></section>
+
+  <section id="calendar-root" class="calendar-root">
+    <p class="loading-note" id="loading-note">Loading the training calendar&hellip;</p>
+  </section>
+
+</main>
+
+<footer>
+  <p>Module status is estimated by name-matching against earned Trailhead badges &mdash;
+     spot-check anything marked borderline before relying on it for sign-off.</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

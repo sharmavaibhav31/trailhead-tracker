@@ -1,0 +1,327 @@
+/* ---------------------------------------------------------------------
+   Design concept: a training "ledger" -- an official attendance/progress
+   register, not a SaaS dashboard. Cool paper background, ink navy text,
+   a stamped-green for completed items and a stamped-amber for pending
+   ones, Plex Serif for headings / Plex Mono for dates & data / Plex Sans
+   for body copy.
+------------------------------------------------------------------------ */
+
+:root {
+  --paper: #eceef0;
+  --panel: #ffffff;
+  --ink: #1b1f2a;
+  --ink-soft: #4b5163;
+  --rule: #d2d6dc;
+  --done: #1f6f5c;
+  --done-bg: #e4f0ec;
+  --pending: #b3651f;
+  --pending-bg: #f7ece0;
+  --accent: #1b1f2a;
+
+  --font-serif: "IBM Plex Serif", Georgia, serif;
+  --font-sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+}
+
+a { color: var(--ink); }
+
+/* ---------- masthead ---------- */
+
+.masthead {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 3rem 1.5rem 2.5rem;
+  border-bottom: 6px solid var(--done);
+}
+
+.masthead-inner {
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+.ledger-no {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  color: #9aa4b8;
+  margin: 0 0 0.5rem;
+}
+
+.masthead h1 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 2.4rem;
+  margin: 0 0 0.6rem;
+}
+
+.masthead-sub {
+  max-width: 60ch;
+  color: #c7cddb;
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* ---------- main / lookup ---------- */
+
+main {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.lookup-panel {
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.lookup-panel label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.lookup-row {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+#profile-input {
+  flex: 1 1 320px;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--rule);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+#profile-input:focus-visible,
+button:focus-visible,
+.link-btn:focus-visible {
+  outline: 2px solid var(--done);
+  outline-offset: 2px;
+}
+
+#check-btn {
+  padding: 0.7rem 1.3rem;
+  background: var(--ink);
+  color: var(--paper);
+  border: none;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+#check-btn:hover { background: #30364a; }
+#check-btn:disabled { opacity: 0.6; cursor: wait; }
+
+.link-btn {
+  margin-top: 0.9rem;
+  background: none;
+  border: none;
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+
+.lookup-error {
+  margin-top: 1rem;
+  padding: 0.8rem 1rem;
+  background: var(--pending-bg);
+  color: var(--pending);
+  border-left: 3px solid var(--pending);
+  font-size: 0.9rem;
+}
+
+/* ---------- profile summary ---------- */
+
+.profile-summary {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  align-items: baseline;
+  padding: 1rem 0 1.5rem;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 1.5rem;
+}
+
+.profile-summary .name {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  margin: 0;
+}
+
+.profile-summary .stat {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.profile-summary .stat strong {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+/* ---------- overall progress ---------- */
+
+.overall-progress {
+  margin-bottom: 2rem;
+}
+
+.overall-progress .bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  margin-bottom: 0.4rem;
+}
+
+.bar-track {
+  height: 10px;
+  background: var(--rule);
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  background: var(--done);
+}
+
+/* ---------- calendar / phases ---------- */
+
+.phase {
+  margin-bottom: 2.5rem;
+}
+
+.phase-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.phase-header h2 {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.phase-covers {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  margin: 0.15rem 0 0.9rem;
+}
+
+.phase-progress {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+.day-row {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 1rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.day-meta {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  padding-top: 0.15rem;
+}
+
+.day-meta .day-name { display: block; }
+
+.day-topic {
+  font-weight: 500;
+  margin: 0 0 0.5rem;
+}
+
+.module-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.module-item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding: 0.3rem 0;
+  font-size: 0.92rem;
+}
+
+.module-mark {
+  flex: none;
+  width: 1.1rem;
+  text-align: center;
+  font-family: var(--font-mono);
+}
+
+.module-item.done .module-mark { color: var(--done); }
+.module-item.pending .module-mark { color: var(--pending); }
+
+.module-name { flex: 1; }
+.module-item.done .module-name { color: var(--ink); }
+.module-item.pending .module-name { color: var(--ink-soft); }
+
+.module-date {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--done);
+  white-space: nowrap;
+}
+
+.module-link {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--ink-soft);
+}
+
+.loading-note {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+footer {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 0 1.5rem 3rem;
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+}
+
+@media (max-width: 560px) {
+  .day-row { grid-template-columns: 1fr; }
+  .day-meta { display: flex; gap: 0.5rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}

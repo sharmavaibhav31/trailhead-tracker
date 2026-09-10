@@ -1,0 +1,538 @@
+{
+  "phases": [
+    {
+      "id": "phase1",
+      "title": "Phase 1 (Admin + PD1)",
+      "covers": "Covers: Salesforce Certified Administrator \u00b7 Salesforce Certified Platform Developer I",
+      "rows": [
+        {
+          "date": "May 11",
+          "day": "Monday",
+          "topic": "Org Setup, Company Settings, UI Customization",
+          "subtopics": "Company Information & Fiscal Year \u00b7 Business Hours & Holidays \u00b7 Language, Locale & Currency Settings \u00b7 Themes, Branding & Lightning App Builder \u00b7 Navigation Bars & App Launcher \u00b7 Custom Apps & Tabs",
+          "hours": "8.0",
+          "reference_link": "https://trailhead.salesforce.com/content/learn/modules/company_wide_org_settings",
+          "modules": [
+            {
+              "name": "Company-Wide Org Settings",
+              "url": "https://trailhead.salesforce.com/content/learn/modules/company_wide_org_settings"
+            },
+            {
+              "name": "Configure Businness Hours, Working Days, & Roles",
+              "url": null
+            },
+            {
+              "name": "Lightning App Builder",
+              "url": null
+            },
+            {
+              "name": "Lightning Experience Customization",
+              "url": null
+            }
+          ]
+        },
+        {
+          "date": "May 12",
+          "day": "Tuesday",
+          "topic": "User Management, Licenses, Profiles, Permission Sets",
+          "subtopics": "Creating & Deactivating Users \u00b7 Salesforce License Types (Sales, Service, Platform, Community) \u00b7 Profile: Object & Field Permissions, App Access \u00b7 Permission Sets & Permission Set Groups \u00b7 Login IP Ranges, Login Hours & Session Settings \u00b7 Password Policies & Identity Verification",
+          "hours": "8.0",
+          "reference_link": "https://trailhead.salesforce.com/content/learn/modules/lex_implementation_user_setup_mgmt?trailmix_creator_id=strailhead&trailmix_slug=prepare-for-your-salesforce-administrator-credential",
+          "modules": [
+            {
+              "name": "User Management",
+              "url": "https://trailhead.salesforce.com/content/learn/modules/lex_implementation_user_setup_mgmt?trailmix_creator_id=strailhead&trailmix_slug=prepare-for-your-salesforce-administrator-credential"
+            },
+            {
+              "name": "Permission Set Groups",
+              "url": null
+            }
+          ]
+        },
+        {
+          "date": "May 13",
+          "day": "Wednesday",
+          "topic": "Security Model: OWD, Roles, Sharing Rules",
+          "subtopics": "OWD Settings: Private, Public Read Only, Public Read/Write \u00b7 Role Hierarchy & Subordinates \u00b7 Manual Sharing & Teams (Account, Opportunity, Case) \u00b7 Criteria-Based & Owner-Based Sharing Rules \u00b7 Field-Level Security (FLS) \u00b7 Restriction Rules & Scoping Rules",
+          "hours": "8.0",
+          "reference_link": "https://trailhead.salesforce.com/content/learn/modules/data_security?trailmix_creator_id=strailhead&trailmix_slug=prepare-for-your-salesforce-administrator-credential",
+          "modules": [
+            {
+              "name": "Data Security",
+              "url": "https://trailhead.salesforce.com/content/learn/modules/data_security?trailmix_creator_id=strailhead&trailmix_slug=prepare-for-your-salesforce-administrator-credential"
+            },
+            {
+              "name": "Protect Your Data in Salesforce",
+              "url": null
+            }
+          ]
+        },
+        {
+          "date": "May 14",
+          "day": "Thursday",
+          "topic": "Object Architecture, Relationships, Schema Builder",
+          "subtopics": "Standard vs Custom Objects \u00b7 Lookup Relationships (nullable, cascade delete) \u00b7 Master-Detail Relationships (roll-up, cascade) \u00b7 Many-to-Many via Junction Objects \u00b7 Hierarchical Relationships \u00b7 External Objects & Indirect Lookups \u00b7 Schema Builder UI",
+          "hours": "8.0",
+          "reference_link": "https://trailhead.salesforce.com/content/learn/modules/data_modeling?trailmix_creator_id=strailhead&trailmix_slug=prepare-for-your-salesforce-administrator-credential",
+          "modules": [
+            {
+              "name": "Data Modeling",
+              "url": "https://trailhead.salesforce.com/content/learn/modules/data_modeling?trailmix_creator_id=strailhead&trailmix_slug=prepare-for-your-salesforce-administrator-credential"
+            }
+          ]
+        },
+        {
+          "date": "May 15",
+          "day": "Friday",
+          "topic": "Fields, Page Layouts, Record Types, Sales Process: Leads, Opportunities, Campaigns",
+          "subtopics": "Standard & Custom Field Types (Text, Number, Picklist, Formula, etc.) \u00b7 Formula Fields & Cross-Object Formulas \u00b7 Roll-Up Summary Fields \u00b7 Validation Rules\u00b7 Page Layout Editor & Related Lists \u00b7 Record Types & Page Layout Assignments \u00b7 Compact Layouts, Dynamic Forms & Dynamic Actions\nLead Conversion Process & Lead Sources \u00b7 Opportunity Stages & Sales Paths \u00b7 Products, Price Books & Quotes \u00b7 Campaign Hierarchy & Campaign Members \u00b7 Forecasting, Quotas & Territory Management \u00b7 Contracts & Orders",
+          "hours": "8.0",
+          "reference_link": "https://trailhead.salesforce.com/content/learn/projects/customize-an-org-to-support-a-new-business-unit?trailmix_creator_id=strailhead&trailmix_slug=prepare-for-your-salesforce-administrator-credential",
+          "modules": [
+            {
+              "name": "Customize an Org to Support a New Business Unit",
+              "url": "https://trailhead.salesforce.com/content/learn/projects/customize-an-org-to-support-a-new-business-unit?trailmix_creator_id=strailhead&trailmix_slug=prepare-for-your-salesforce-administrator-credential"
+            },
+            {
+              "name": "Lightning Experience Customization",
+              "url": null
+            },
+            {
+              "name": "Lightning App Builder",
+              "url": null
+            },
+            {
+              "name": "Formulas and Validations",
+              "url": null
+            }
+          ]
+        },
+        {
+          "date": "May 18",
+          "day": "Monday",
+          "topic": "Case Management, Support Process, Automation",
+          "subtopics": "Case Creation: Email-to-Case & Web-to-Case \u00b7 Case Assignment & Escalation Rules \u00b7 Queues & Service Console \u00b7 Entitlements, Milestones & SLAs \u00b7 Knowledge Articles & Article Types \u00b7 Omni-Channel Routing basics",
+          "hours": "8.0",
+          "reference_link": "https://trailhead.salesforce.com/content/learn/modules/service_lex?trailmix_creator_id=strailhead&trailmix_slug=prepare-for-your-salesforce-administrator-credential",
+          "modules": [
+            {
+              "name": "Agentforce Service Administration",
+              "url": "https://trailhead.salesforce.com/content/learn/modules/service_lex?trailmix_creator_id=strailhead&trailmix_slug=prepare-for-your-salesforce-administrator-credential"
+            },
+            {
+              "name": "Set Up the Service Console",
+              "url": null
+            },
+            {
+              "name": "Create a Process for Managing Support Cases",
+              "url": null
+            },
+            {
+              "name": "Set Up Case Escalation and Entitlements",
+              "url": null
+            }
+          ]
+        },
+        {
+          "date": "May 19",
+          "day": "Tuesday",
+          "topic": "Activities, Chatter, Mobile App, AppExchange",
+          "subtopics": "Tasks, Events & Email Integration \u00b7 Activity Timeline & Activity Settings \u00b7 Chatter: Groups, Feeds, Polls & Files \u00b7 Salesforce Mobile App: Features & Customization \u00b7 AppExchange: Installing, Upgrading & Managing Packages \u00b7 Connected Apps & OAuth Flows",
+          "hours": "8.0",
+          "reference_link": "https://trailhead.salesforce.com/content/learn/modules/lex_implementation_chatter?trailmix_creator_id=strailhead&trailmix_slug=prepare-for-your-salesforce-administrator-credential",
+          "modules": [
+            {
+              "name": "Chatter Administration for Lightning Experience",
+              "url": "https://trailhead.salesforce.com/content/learn/modules/lex_implementation_chatter?trailmix_creator_id=strailhead&trailmix_slug=prepare-for-your-salesforce-administrator-credential"
+            },
+            {
+              "name": "AgentExchange Basics",
+              "url": null
+            }
+          ]
+        },
+        {
+          "date": "May 20",
+          "day": "Wednesday",
+          "topic": "Data Management: Import, Export, Validation Rules",
+          "subtopics": "Data Import Wizard: Supported Objects & Mapping \u00b7 Data Loader: CLI & UI Operations \u00b7 Export Data & Scheduled Exports \u00b7 Validation Rules: Syntax, ISBLANK, ISPICKVAL \u00b7 Error Messages & Bypass Strategies \u00b7 Duplicate Rules & Matching Rules",
+          "hours": "8.0",
+          "reference_link": "https://trailhead.salesforce.com/content/learn/modules/lex_implementation_data_management?trailmix_creator_id=strailhead&trailmix_slug=prepare-for-your-salesforce-administrator-credential",
+          "modules": [
+            {
+              "name": "Data Management",
+              "url": "https://trailhead.salesforce.com/content/learn/modules/lex_implementation_data_management?trailmix_creator_id=strailhead&trailmix_slug=prepare-for-your-salesforce-administrator-credential"
+            },
+            {
+              "name": "Duplicate Management",
+              "url": null
+            },
+            {
+              "name": "Import and Export with Data Management Tools",
+              "url": null
+            }
+          ]
+        },
+        {
+          "date": "May 21",
+          "day": "Thursday",
+          "topic": "Reports & Dashboards (Advanced Concepts)",
+          "subtopics": "Report Types: Tabular, Summary, Matrix, Joined \u00b7 Filters, Cross-Filters & Row-Limit Filters \u00b7 Groupings, Buckets & Summary Formulas \u00b7 Dynamic Dashboards & Dashboard Filters \u00b7 Report Charts & Conditional Formatting \u00b7 Scheduled Reports & CRM Analytics Intro",
+          "hours": "8.0",
+          "reference_link": "https://trailhead.salesforce.com/content/learn/modules/lex_implementation_reports_dashboards?trailmix_creator_id=strailhead&trailmix_slug=prepare-for-your-salesforce-administrator-credential",
+          "modules": [
+            {
+              "name": "Reports & Dashboards for Lightning Experience",
+              "url": "https://trailhead.salesforce.com/content/learn/modules/lex_implementation_reports_dashboards?trailmix_creator_id=strailhead&trailmix_slug=prepare-for-your-salesforce-administrator-credential"
+            },
+            {
+              "name": "Create Reports and Dashboards for Sales and Marketing Managers",
+              "url": null
+            }
+          ]
+        },
+        {
+          "date": "May 22",
+          "day": "Friday",
+          "topic": "Flow Builder (All Types) + Approval Process\nAdmin + Agentforce Basics Integration",
+          "subtopics": "Screen Flows: Input Components, Navigation \u00b7 Record-Triggered Flows: Before/After Save \u00b7 Scheduled Flows & Auto-Launched Flows \u00b7 Flow Variables, Loops, Decision & Assignment Elements \u00b7 Subflows & Custom Error Handling \u00b7 Approval Processes: Steps, Actions, Recall & Delegated Approvers, \nAgentforce Overview & Trusted AI Principles \u00b7 Einstein Bots & Handoff to Live Agents \u00b7 Einstein Next Best Action & Recommendations \u00b7 AI-Powered Flow Enhancements \u00b7 Predictive Lead Scoring & Opportunity Insights \u00b7 Einstein Activity Capture setup",
+          "hours": "8.0",
+          "reference_link": "https://trailhead.salesforce.com/content/learn/modules/flow-basics",
+          "modules": [
+            {
+              "name": "Flow Builder Basics",
+              "url": "https://trailhead.salesforce.com/content/learn/modules/flow-basics"
+            },
+            {
+              "name": "Business Process Automation",
+              "url": null
+            },
+            {
+              "name": "Record Triggered Flow",
+              "url": null
+            }
+          ]
+        },
+        {
+          "date": "May 25",
+          "day": "Monday",
+          "topic": "Dev Fundamentals: MVC, Multi-Tenant, Data Modeling",
+          "subtopics": "Salesforce MVC Architecture (Model-View-Controller) \u00b7 Multi-Tenant Architecture & Metadata-Driven Dev \u00b7 Governor Limits: SOQL rows, DML statements, Heap, CPU \u00b7 Salesforce Data Model & Relationships \u00b7 Platform Events & Change Data Capture \u00b7 Streaming API & CometD basics",
+          "hours": "8.0",
+          "reference_link": "https://trailhead.salesforce.com/content/learn/modules/starting_force_com/starting_understanding_arch",
+          "modules": [
+            {
+              "name": "Agentforce 360 Platform Basics",
+              "url": "https://trailhead.salesforce.com/content/learn/modules/starting_force_com/starting_understanding_arch"
+            }
+          ]
+        },
+        {
+          "date": "May 26",
+          "day": "Tuesday",
+          "topic": "Apex Basics: Syntax, Variables, Data Types",
+          "subtopics": "Apex Class Structure, Access Modifiers (public, private, global) \u00b7 Primitive Types: String, Integer, Long, Decimal, Boolean, Date, Datetime \u00b7 sObject Types & Generic sObject \u00b7 Null Handling & Safe Navigation Operator (?.) \u00b7 Type Casting & Type Checking (instanceof) \u00b7 Enum & Constants",
+          "hours": "8.0",
+          "reference_link": "https://trailhead.salesforce.com/content/learn/modules/apex_database",
+          "modules": [
+            {
+              "name": "Apex Basics & Database",
+              "url": "https://trailhead.salesforce.com/content/learn/modules/apex_database"
+            }
+          ]
+        },
+        {
+          "date": "May 27",
+          "day": "Wednesday",
+          "topic": "SOQL, SOSL, DML Operations, Apex Logic: Control Flow, Collections",
+          "subtopics": "SOQL: SELECT, WHERE, ORDER BY, LIMIT, OFFSET \u00b7 Parent-to-Child & Child-to-Parent Relationship Queries \u00b7 Aggregate Functions: COUNT, SUM, AVG, GROUP BY, HAVING \u00b7 SOSL: FIND, IN ALL/NAME/EMAIL FIELDS, RETURNING \u00b7 DML Statements: insert, update, delete, upsert, undelete \u00b7 Database Class Methods, Partial Success & Savepoints, \nIf-Else, Ternary & Switch Statements \u00b7 For Loops, While Loops & Do-While Loops \u00b7 List: add, remove, contains, sort, size \u00b7 Set: uniqueness, contains, addAll \u00b7 Map: put, get, keySet, values, containsKey \u00b7 Nested Collections & Iterating Collections \u00b7 Bulkification Patterns & Avoiding SOQL Inside Loops",
+          "hours": "8.0",
+          "reference_link": "https://trailhead.salesforce.com/content/learn/modules/platform-developer-i-certification-prep-logic-and-process-automation/pd1-2-soql-sosl-dml",
+          "modules": [
+            {
+              "name": "SOQL, SOSL, and DML Refresher - Prepare for PD1 Exam",
+              "url": "https://trailhead.salesforce.com/content/learn/modules/platform-developer-i-certification-prep-logic-and-process-automation/pd1-2-soql-sosl-dml"
+            }
+          ]
+        },
+        {
+          "date": "May 28",
+          "day": "Thursday",
+          "topic": "Triggers, Order of Execution, Recursion",
+          "subtopics": "Trigger Syntax: before/after, insert/update/delete/undelete \u00b7 Context Variables: Trigger.new, Trigger.old, Trigger.newMap, Trigger.isInsert \u00b7 Trigger Handler Pattern & One Trigger per Object Rule \u00b7 Order of Execution: 15-Step Process (Validation, WFR, Flows, etc.) \u00b7 Recursion Control with Static Variables \u00b7 Best Practices & Anti-Patterns",
+          "hours": "8.0",
+          "reference_link": "https://trailhead.salesforce.com/content/learn/modules/apex_triggers",
+          "modules": [
+            {
+              "name": "Apex Triggers",
+              "url": "https://trailhead.salesforce.com/content/learn/modules/apex_triggers"
+            },
+            {
+              "name": "Asynchronous Apex",
+              "url": null
+            }
+          ]
+        },
+        {
+          "date": "May 29",
+          "day": "Friday",
+          "topic": "Testing, Debugging, Deployment Tools, Asynchronous Apex",
+          "subtopics": "@isTest Annotation, Test.startTest / Test.stopTest \u00b7 Test Data Setup, @testSetup & TestDataFactory Pattern \u00b7 System.assert, assertEquals, assertNotEquals \u00b7 Debug Logs: Log Levels, LIMIT_USAGE, USER_DEBUG \u00b7 Change Sets, Metadata API & Package.xml \u00b7 Scratch Orgs, SFDX CLI Commands & CI/CD Basics, Asynchronous Apex(Future methods, Batch Apex, Queueable Apex, Scheduled Apex)",
+          "hours": "8.0",
+          "reference_link": "https://trailhead.salesforce.com/content/learn/modules/platform-developer-i-certification-prep-testing-debugging-and-deployment",
+          "modules": [
+            {
+              "name": "Cert Prep: Platform Developer: Testing, Debugging, and Deployment",
+              "url": "https://trailhead.salesforce.com/content/learn/modules/platform-developer-i-certification-prep-testing-debugging-and-deployment"
+            },
+            {
+              "name": "Apex Integration Services",
+              "url": null
+            },
+            {
+              "name": "Apex Testing",
+              "url": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase2",
+      "title": "Phase 2 (JS + LWC + Agentforce)",
+      "covers": "Covers: Salesforce Certified JavaScript Developer I \u00b7 LWC Specialist \u00b7 Agentforce Specialist",
+      "rows": [
+        {
+          "date": "June 8",
+          "day": "Monday",
+          "topic": "JS Basics: Variables, Data Types, Type Coercion",
+          "subtopics": "var, let, const: hoisting & TDZ \u00b7 Primitive Types: String, Number, Boolean, Null, Undefined, Symbol, BigInt \u00b7 Type Coercion: Implicit (==) vs Explicit (Number(), String()) \u00b7 typeof & instanceof Operators \u00b7 Template Literals & Tagged Templates \u00b7 String Methods: slice, split, includes, replace, padStart",
+          "hours": "8.0",
+          "reference_link": "https://trailhead.salesforce.com/content/learn/modules/javascript-essentials-salesforce-developers?trailmix_creator_id=strailhead&trailmix_slug=prepare-for-your-salesforce-javascript-developer-i-credential",
+          "modules": [
+            {
+              "name": "JavaScript Skills for Salesforce Developers",
+              "url": "https://trailhead.salesforce.com/content/learn/modules/javascript-essentials-salesforce-developers?trailmix_creator_id=strailhead&trailmix_slug=prepare-for-your-salesforce-javascript-developer-i-credential"
+            }
+          ]
+        },
+        {
+          "date": "June 9",
+          "day": "Tuesday",
+          "topic": "Arrays, JSON, Data Manipulation",
+          "subtopics": "Array Methods: map, filter, reduce, forEach, find, findIndex, some, every \u00b7 Spread (...) & Rest Parameters \u00b7 Array Destructuring & Nested Destructuring \u00b7 JSON.stringify (replacer, space) & JSON.parse (reviver) \u00b7 Sorting with Comparator Functions \u00b7 Array.from, flat, flatMap",
+          "hours": "8.0",
+          "reference_link": "https://trailhead.salesforce.com/content/learn/modules/javascript-essentials-salesforce-developers?trailmix_creator_id=strailhead&trailmix_slug=prepare-for-your-salesforce-javascript-developer-i-credential",
+          "modules": [
+            {
+              "name": "JavaScript Skills for Salesforce Developers",
+              "url": "https://trailhead.salesforce.com/content/learn/modules/javascript-essentials-salesforce-developers?trailmix_creator_id=strailhead&trailmix_slug=prepare-for-your-salesforce-javascript-developer-i-credential"
+            }
+          ]
+        },
+        {
+          "date": "June 10",
+          "day": "Wednesday",
+          "topic": "Functions, Scope, Execution Context,\nObjects, Classes, Modules, Decorators",
+          "subtopics": "Function Declarations vs Expressions vs Arrow Functions \u00b7 Global, Function & Block Scope \u00b7 Hoisting (var, function declarations) \u00b7 call(), apply(), bind() & Explicit this binding\nObject Literals, Property Shorthand, Computed Properties \u00b7 Object Destructuring & Optional Chaining (?.) \u00b7 Class: constructor, methods, inheritance (extends, super) \u00b7 Static Methods & Private Fields (#) \u00b7 ES Modules: import/export, default vs named exports \u00b7 Decorators: @api (public), @track (reactive), @wire (Apex/adapters)",
+          "hours": "8.0",
+          "reference_link": "https://trailhead.salesforce.com/content/learn/modules/javascript-essentials-salesforce-developers?trailmix_creator_id=strailhead&trailmix_slug=prepare-for-your-salesforce-javascript-developer-i-credential",
+          "modules": [
+            {
+              "name": "JavaScript Skills for Salesforce Developers",
+              "url": "https://trailhead.salesforce.com/content/learn/modules/javascript-essentials-salesforce-developers?trailmix_creator_id=strailhead&trailmix_slug=prepare-for-your-salesforce-javascript-developer-i-credential"
+            },
+            {
+              "name": "Get Started with Modern JavaScript Development",
+              "url": null
+            }
+          ]
+        },
+        {
+          "date": "June 11",
+          "day": "Thursday",
+          "topic": "DOM Manipulation & Browser APIs",
+          "subtopics": "querySelector, querySelectorAll, getElementById, DOM Traversal \u00b7 createElement, appendChild, removeChild, innerHTML vs textContent \u00b7 classList: add, remove, toggle, contains \u00b7 LocalStorage, SessionStorage & Cookies \u00b7 Fetch API & XMLHttpRequest basics \u00b7 Web Components: Shadow DOM, Custom Elements",
+          "hours": "8.0",
+          "reference_link": "https://trailhead.salesforce.com/content/learn/modules/apex_database",
+          "modules": [
+            {
+              "name": "Apex Basics & Database",
+              "url": "https://trailhead.salesforce.com/content/learn/modules/apex_database"
+            }
+          ]
+        },
+        {
+          "date": "June 12",
+          "day": "Friday",
+          "topic": "Events, Event Handling, Propagation",
+          "subtopics": "addEventListener & removeEventListener (options: capture, once, passive) \u00b7 Event Bubbling, Capturing & stopPropagation / preventDefault \u00b7 CustomEvent: detail payload, bubbles, composed \u00b7 dispatchEvent & Event Delegation Pattern \u00b7 Mouse, Keyboard, Focus & Form Events \u00b7 Pointer Events & Touch Events",
+          "hours": "8.0",
+          "reference_link": "https://trailhead.salesforce.com/content/learn/modules/coding-for-web-accessibility?trailmix_creator_id=strailhead&trailmix_slug=prepare-for-your-salesforce-javascript-developer-i-credential",
+          "modules": [
+            {
+              "name": "Coding for Web Accessibility",
+              "url": "https://trailhead.salesforce.com/content/learn/modules/coding-for-web-accessibility?trailmix_creator_id=strailhead&trailmix_slug=prepare-for-your-salesforce-javascript-developer-i-credential"
+            }
+          ]
+        },
+        {
+          "date": "June 15",
+          "day": "Monday",
+          "topic": "Debugging, Error Handling, Dev Tools",
+          "subtopics": "try-catch-finally & Throwing Custom Errors \u00b7 Error Types: TypeError, ReferenceError, SyntaxError, RangeError \u00b7 Chrome DevTools: Console, Sources, Network, Elements panels \u00b7 Breakpoints, Conditional Breakpoints & Watch Expressions \u00b7 console.log, warn, error, table, time \u00b7 Performance Profiling & Memory Leak Detection",
+          "hours": "8.0",
+          "reference_link": "https://trailhead.salesforce.com/content/learn/modules/lwc-troubleshooting",
+          "modules": [
+            {
+              "name": "Lightning Web Component Troubleshooting",
+              "url": "https://trailhead.salesforce.com/content/learn/modules/lwc-troubleshooting"
+            }
+          ]
+        },
+        {
+          "date": "June 16",
+          "day": "Tuesday",
+          "topic": "Async JS: Promises, Event Loop",
+          "subtopics": "Call Stack, Web APIs, Callback Queue & Microtask Queue \u00b7 Event Loop: Macro vs Micro tasks \u00b7 Promise: resolve, reject, .then(), .catch(), .finally() \u00b7 Promise.all, Promise.allSettled, Promise.race, Promise.any \u00b7 async / await Syntax & Error Handling (try-catch in async) \u00b7 Common Pitfalls: Unhandled Rejections, Sequential vs Parallel",
+          "hours": "8.0",
+          "reference_link": "https://trailhead.salesforce.com/content/learn/modules/modern-javascript-development?trailmix_creator_id=strailhead&trailmix_slug=prepare-for-your-salesforce-javascript-developer-i-credential",
+          "modules": [
+            {
+              "name": "Get Started with Modern JavaScript Development",
+              "url": "https://trailhead.salesforce.com/content/learn/modules/modern-javascript-development?trailmix_creator_id=strailhead&trailmix_slug=prepare-for-your-salesforce-javascript-developer-i-credential"
+            }
+          ]
+        },
+        {
+          "date": "June 17",
+          "day": "Wednesday",
+          "topic": "LWC Basics: Components, Lifecycle",
+          "subtopics": "Component Structure: .html, .js, .css, .js-meta.xml \u00b7 Lifecycle Hooks: constructor, connectedCallback, disconnectedCallback, renderedCallback, errorCallback \u00b7 Template Directives: lwc:if/lwc:else, for:each & iterator \u00b7 Data Binding: {property}, getter/setter, @track for deep reactivity \u00b7 CSS Encapsulation: :host, ::slotted, CSS Custom Properties \u00b7 Slots: Default & Named Slots",
+          "hours": "8.0",
+          "reference_link": "https://trailhead.salesforce.com/content/learn/projects/quick-start-lightning-web-components?trailmix_creator_id=strailhead&trailmix_slug=prepare-for-your-salesforce-javascript-developer-i-credential",
+          "modules": [
+            {
+              "name": "Quick Start: Lightning Web Components",
+              "url": "https://trailhead.salesforce.com/content/learn/projects/quick-start-lightning-web-components?trailmix_creator_id=strailhead&trailmix_slug=prepare-for-your-salesforce-javascript-developer-i-credential"
+            },
+            {
+              "name": "Lightning Web Components Basics",
+              "url": null
+            }
+          ]
+        },
+        {
+          "date": "June 18",
+          "day": "Thursday",
+          "topic": "Templates, Events, Apex Integration",
+          "subtopics": "Parent-to-Child: @api Public Properties & Methods \u00b7 Child-to-Parent: CustomEvent with detail, bubbles, composed \u00b7 Sibling Communication: Lightning Message Service (LMS) channels \u00b7 @wire Decorator: getRecord, getPicklistValues, getRelatedListRecords \u00b7 Imperative Apex Calls: async/await pattern, error handling \u00b7 NavigationMixin, Toast Notifications & Lightning Data Service",
+          "hours": "8.0",
+          "reference_link": "https://trailhead.salesforce.com/content/learn/modules/lightning-web-components-basics/handle-events-in-lightning-web-components",
+          "modules": [
+            {
+              "name": "Handle Events in LWC",
+              "url": "https://trailhead.salesforce.com/content/learn/modules/lightning-web-components-basics/handle-events-in-lightning-web-components"
+            }
+          ]
+        },
+        {
+          "date": "June 19",
+          "day": "Friday",
+          "topic": "Server-side JavaScript, JS Testing Concepts",
+          "subtopics": "Importing Apex methods into LWC, @AuraEnabled annotation (why it's required), Static methods in Apex for LWC access, Passing parameters from JS \u2192 Apex, Returning data from Apex \u2192 JS\nTest Pyramid: Unit, Integration & E2E Testing \u00b7 Jest: describe, it/test, expect, matchers (toBe, toEqual, toContain) \u00b7 beforeEach, afterEach, beforeAll, afterAll hooks \u00b7 Mocking: jest.fn(), jest.mock(), jest.spyOn() \u00b7 LWC Jest Setup: @salesforce/apex mocks, @wire mocks \u00b7 Code Coverage Requirements (75%+ for Salesforce deployment)",
+          "hours": "8.0",
+          "reference_link": "https://trailhead.salesforce.com/content/learn/modules/lightning-web-components-and-salesforce-data?trailmix_creator_id=strailhead&trailmix_slug=prepare-for-your-salesforce-javascript-developer-i-credential",
+          "modules": [
+            {
+              "name": "Lightning Web Components and Salesforce Data",
+              "url": "https://trailhead.salesforce.com/content/learn/modules/lightning-web-components-and-salesforce-data?trailmix_creator_id=strailhead&trailmix_slug=prepare-for-your-salesforce-javascript-developer-i-credential"
+            }
+          ]
+        },
+        {
+          "date": "June 22",
+          "day": "Monday",
+          "topic": "Agentforce: AI Agents, Types, Use Cases",
+          "subtopics": "Agentforce Platform Overview & Architecture \u00b7 Agent Types: Autonomous (SDR, Coach) & Assistive (Copilot) \u00b7 Standard & Custom Agent Actions \u00b7 Topics, Instructions & Clarification Handling \u00b7 Pre-Built Agent Templates (Service Agent, Sales Agent) \u00b7 Agentforce for Slack & Experience Cloud",
+          "hours": "8.0",
+          "reference_link": "https://trailhead.salesforce.com/content/learn/trails/design-and-implement-ai-agents-with-agentforce",
+          "modules": [
+            {
+              "name": "Design and Implement AI Agents with Agentforce",
+              "url": "https://trailhead.salesforce.com/content/learn/trails/design-and-implement-ai-agents-with-agentforce"
+            }
+          ]
+        },
+        {
+          "date": "June 23",
+          "day": "Tuesday",
+          "topic": "Prompt Engineering + Prompt Builder",
+          "subtopics": "Prompt Template Types: Flex, Field Generation, Sales Email \u00b7 Grounding Techniques: Merge Fields & Related List Grounding \u00b7 Prompt Builder UI: Create, Test & Activate Templates \u00b7 Chain-of-Thought & Few-Shot Prompting Patterns \u00b7 Hallucination Reduction & Output Validation \u00b7 Responsible AI & Einstein Trust Layer Principles",
+          "hours": "8.0",
+          "reference_link": "https://trailhead.salesforce.com/content/learn/trails/get-started-with-prompts-and-prompt-studio",
+          "modules": [
+            {
+              "name": "Get Started with Prompts and Prompt Builder",
+              "url": "https://trailhead.salesforce.com/content/learn/trails/get-started-with-prompts-and-prompt-studio"
+            }
+          ]
+        },
+        {
+          "date": "June 24",
+          "day": "Wednesday",
+          "topic": "Data Cloud: Retrieval, Indexing, Search Types",
+          "subtopics": "Data Cloud Data Model: Data Streams & Data Lake Objects (DLO) \u00b7 Identity Resolution & Reconciliation Rules \u00b7 Unified Individual / Unified Profile concept \u00b7 Einstein Search Indexes & Vector Embeddings \u00b7 Retrieval Augmented Generation (RAG) for Agentforce \u00b7 Semantic Search vs Keyword Search vs Hybrid Search",
+          "hours": "8.0",
+          "reference_link": "https://trailhead.salesforce.com/content/learn/trails/unlock-your-data-with-data-cloud",
+          "modules": [
+            {
+              "name": "Unlock your Data with Data Cloud",
+              "url": "https://trailhead.salesforce.com/content/learn/trails/unlock-your-data-with-data-cloud"
+            }
+          ]
+        },
+        {
+          "date": "June 25",
+          "day": "Thursday",
+          "topic": "Agent Lifecycle: Testing, Deployment, Monitoring",
+          "subtopics": "Agent Builder: Conversation Design & Topic Configuration \u00b7 Test Center: Scenario-Based Agent Testing \u00b7 Deploying Agents: Sandbox \u2192 Production Flow \u00b7 Agent Monitoring: Conversation Logs & Handoff Metrics \u00b7 Feedback Loops & Continuous Improvement Cycles \u00b7 Version Control & Rollback Strategies",
+          "hours": "8.0",
+          "reference_link": "https://trailhead.salesforce.com/content/learn/modules/agentforce-testing-tools-and-strategies",
+          "modules": [
+            {
+              "name": "Agentforce Testing Tools and Strategies",
+              "url": "https://trailhead.salesforce.com/content/learn/modules/agentforce-testing-tools-and-strategies"
+            }
+          ]
+        },
+        {
+          "date": "June 26",
+          "day": "Friday",
+          "topic": "Multi-Agent Architecture + MCP + APIs",
+          "subtopics": "Multi-Agent Orchestration: Primary & Specialist Agents \u00b7 Model Context Protocol (MCP): Tools, Resources, Prompts \u00b7 Einstein Trust Layer: Data Masking & Toxicity Detection \u00b7 External API Integration with Agentforce Actions \u00b7 xGen Models, Flex Credits & Cost Management \u00b7 Governance, Compliance & AI Audit Trails",
+          "hours": "8.0",
+          "reference_link": "http://trailhead.salesforce.com/content/learn/modules/advanced-rag-with-data-360-and-agentforce",
+          "modules": [
+            {
+              "name": "Unstructured Data In Data Cloud",
+              "url": "https://trailhead.salesforce.com/content/learn/projects/unstructured-data-in-data-cloud"
+            },
+            {
+              "name": "Advanced Rag With Data 360 And Agentforce",
+              "url": "https://trailhead.salesforce.com/content/learn/modules/advanced-rag-with-data-360-and-agentforce"
+            },
+            {
+              "name": "Agentforce Agent Testing",
+              "url": "https://trailhead.salesforce.com/content/learn/modules/agentforce-agent-testing"
+            },
+            {
+              "name": "Agentforce Testing Tools And Strategies",
+              "url": "https://trailhead.salesforce.com/content/learn/modules/agentforce-testing-tools-and-strategies"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
