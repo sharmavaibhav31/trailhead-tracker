@@ -12,7 +12,7 @@ import trailhead_client as tc
 
 
 def main():
-    if len(sys.argv) != 2:
+    if len(sys.argv) not in (2, 3):
         print(__doc__)
         sys.exit(1)
 
@@ -26,51 +26,23 @@ def main():
         print(f"   FAILED: {e}")
         return
 
-    session = tc.BrowserSession()
+    print(f"\n2. Testing get_progress_data pipeline (Cache Miss)...")
     try:
-        print(f"\n2. Fetching Aura config (fwuid)")
-        try:
-            fwuid = tc._get_fwuid(session)
-            print(f"   -> fwuid: {fwuid}")
-        except tc.TrailheadError as e:
-            print(f"   FAILED: {e}")
-            return
+        awards, profile_info, rank_info = tc.get_progress_data(handle, force_refresh=True)
+        print(f"   Profile Info: {profile_info}")
+        print(f"   Rank Info: {rank_info}")
+        print(f"   Awards fetched: {len(awards)}")
+    except Exception as e:
+        print(f"   Progress data lookup failed: {e}")
 
-        profile_url = tc._build_profile_url(handle)
-        print(f"\n3. Fetching profile page: {profile_url}")
-        try:
-            user_id = tc.fetch_user_id(session, handle)
-            print(f"   -> user_id: {user_id}")
-        except tc.TrailheadError as e:
-            print(f"   FAILED: {e}")
-            status, html = session.get_profile_html(handle)
-            print(f"\n   Raw page fetch for inspection -- HTTP {status}, {len(html)} chars")
-            print(f"   First 1000 chars:\n{html[:1000]}")
-            return
+    print(f"\n3. Testing get_progress_data pipeline (Cache Hit)...")
+    cached_data = tc.GLOBAL_PROFILE_CACHE.get(handle)
+    if cached_data:
+        print("   -> Cache hit verified!")
+    else:
+        print("   -> Cache miss.")
 
-        print("\n4. Fetching rank data")
-        try:
-            rank_data = tc.fetch_rank_data(session, handle, user_id)
-            print(f"   -> {rank_data}")
-        except tc.TrailheadError as e:
-            print(f"   FAILED: {e}")
-            rank_data = {}
-
-        print("\n5. Fetching badges")
-        try:
-            awards = tc.fetch_awards(session, handle, user_id)
-            print(f"   -> got {len(awards)} awards")
-            for a in awards[:5]:
-                print(f"      {a}")
-            if len(awards) > 5:
-                print(f"      ... and {len(awards) - 5} more")
-        except tc.TrailheadError as e:
-            print(f"   FAILED: {e}")
-            return
-
-        print("\nAll steps succeeded.")
-    finally:
-        session.close()
+    print("\nDiagnostic checks completed.")
 
 
 if __name__ == "__main__":

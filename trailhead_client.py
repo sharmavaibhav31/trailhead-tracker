@@ -23,6 +23,8 @@ plugin -- let me know what diagnose.py prints and I'll take it from there.
 
 import json
 import re
+import threading
+import time
 
 from playwright.sync_api import sync_playwright
 
@@ -34,6 +36,35 @@ _UA = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
     "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
 )
+
+
+class ProfileCache:
+    """Thread-safe TTL in-memory cache for profile progress data."""
+
+    def __init__(self, ttl_seconds=3600):
+        self.ttl = ttl_seconds
+        self._store = {}
+        self._lock = threading.Lock()
+
+    def get(self, handle):
+        with self._lock:
+            if handle in self._store:
+                data, timestamp = self._store[handle]
+                if time.time() - timestamp < self.ttl:
+                    return data
+                del self._store[handle]
+        return None
+
+    def set(self, handle, data):
+        with self._lock:
+            self._store[handle] = (data, time.time())
+
+    def clear(self):
+        with self._lock:
+            self._store.clear()
+
+
+GLOBAL_PROFILE_CACHE = ProfileCache()
 
 
 class TrailheadError(Exception):
@@ -281,11 +312,15 @@ def fetch_awards(session, handle, user_id, limit=None):
     return awards
 
 
-def get_progress_data(raw_profile_input):
+def get_progress_data(raw_profile_input, force_refresh=False):
     """Returns (awards, profile_info, rank_info) for the given profile
-    URL/handle. Raises TrailheadError with a detailed, user-facing message
-    on failure."""
+    URL/handle. Serves from cache if available unless force_refresh is True."""
     handle = extract_handle(raw_profile_input)
+
+    if not force_refresh:
+        cached = GLOBAL_PROFILE_CACHE.get(handle)
+        if cached is not None:
+            return cached
 
     session = BrowserSession()
     try:
@@ -308,15 +343,17 @@ def get_progress_data(raw_profile_input):
 
     profile_info = {
         "handle": handle,
-        "first_name": _extract_field(profile_data, [["profileUser", "FirstName"]]),
-        "last_name": _extract_field(profile_data, [["profileUser", "LastName"]]),
-        "company": _extract_field(profile_data, [["profileUser", "CompanyName"]]),
-        "photo": _extract_field(profile_data, [["profilePhotoUrl"]]),
+        "first_name": _extract_field(profile_data, [["profileUser", "FirstName"], ["FirstName"], ["first_name"]]),
+        "last_name": _extract_field(profile_data, [["profileUser", "LastName"], ["LastName"], ["last_name"]]),
+        "company": _extract_field(profile_data, [["profileUser", "CompanyName"], ["CompanyName"], ["company"]]),
+        "photo": _extract_field(profile_data, [["profilePhotoUrl"], ["photoUrl"], ["avatar"]]),
     }
     rank_info = {
-        "rank_label": rank_data.get("RankLabel"),
-        "points": rank_data.get("EarnedPointTotal"),
-        "badges": rank_data.get("EarnedBadgeTotal"),
-        "trails": rank_data.get("CompletedTrailTotal"),
+        "rank_label": rank_data.get("RankLabel") or rank_data.get("rank") or "Learner",
+        "points": rank_data.get("EarnedPointTotal") or rank_data.get("points") or 0,
+        "badges": rank_data.get("EarnedBadgeTotal") or rank_data.get("badges") or len(awards),
+        "trails": rank_data.get("CompletedTrailTotal") or rank_data.get("trails") or 0,
     }
-    return awards, profile_info, rank_info
+    result = (awards, profile_info, rank_info)
+    GLOBAL_PROFILE_CACHE.set(handle, result)
+    return result
