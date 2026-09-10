@@ -3,45 +3,37 @@ Talks to Trailhead's own internal Aura endpoints (the same ones the
 trailblazer.me profile page itself calls in the browser) to pull public
 profile info, rank/points, and earned badges for a given Trailhead handle.
 
-This used to just call the third-party `trailhead-scraper` PyPI package.
-It's vendored and rewritten in-house now because that package's calls were
-failing against real profiles (see CHANGELOG note below) and, as a small
-unmaintained dependency, it gave us no visibility into *why* -- every
-failure came back as the same generic exception. This version keeps every
-HTTP response's status code and a text snippet attached to errors, so if it
-breaks again the error message itself tells us what changed, instead of us
-guessing. `diagnose.py` in this same folder runs all of this step by step
-and prints the raw responses if you need to debug further.
+This now drives a real headless browser (Playwright) instead of plain
+`requests`, because trailblazer.me returns HTTP 403 to plain HTTP calls
+regardless of headers -- that's WAF/bot-detection (Cloudflare/Akamai-style)
+keying off TLS and JS fingerprints a plain HTTP client can't produce, not
+just a missing User-Agent. Running everything (page load AND the Aura POST
+calls) inside one real browser context is what gets past that.
 
 IMPORTANT / HONESTY NOTE: Trailhead has no official public API. This code
-calls internal, undocumented endpoints, which Salesforce can change without
-notice. This sandbox has no network access to salesforce.com, so none of
-this can be tested end-to-end from here -- it has to be debugged against
-real responses on your machine using diagnose.py.
+calls internal, undocumented endpoints, which Salesforce can change or
+block further at any time. This sandbox has no network access to
+salesforce.com, so none of this can be tested end-to-end from here -- it
+has to be verified against real responses on your machine using
+diagnose.py. If Trailhead's bot protection blocks even a real headless
+browser (some WAFs fingerprint headless Chrome specifically), the next
+escalation is running Playwright with `headless=False` or with a stealth
+plugin -- let me know what diagnose.py prints and I'll take it from there.
 """
 
 import json
 import re
 
-import requests
+from playwright.sync_api import sync_playwright
 
 BASE_URL = "https://trailblazer.me"
 AURA_SERVICE_URL = f"{BASE_URL}/aura"
 AURA_CONFIG_URL = f"{BASE_URL}/c/ProfileApp.app?aura.format=JSON&aura.formatAdapter=LIGHTNING_OUT"
 
-# A plain `requests` default User-Agent (python-requests/x.x) gets treated as
-# a bot by a lot of front-ends and served a different (often JS-only or
-# consent-wall) page than a browser would get. Sending browser-like headers
-# is the single highest-value fix for scrapers like this breaking silently.
-_SESSION = requests.Session()
-_SESSION.headers.update({
-    "User-Agent": (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-        "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-    ),
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    "Accept-Language": "en-US,en;q=0.9",
-})
+_UA = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+)
 
 
 class TrailheadError(Exception):
@@ -77,7 +69,6 @@ def extract_handle(raw_input):
         if match:
             return match.group(1)
 
-    # No URL pattern matched -- if it's a bare word/handle, use it directly.
     bare = raw.rstrip("/").split("/")[-1]
     if re.match(r"^[a-zA-Z0-9\-]+$", bare):
         return bare
@@ -89,9 +80,6 @@ def extract_handle(raw_input):
 
 
 def _extract_field(data, paths, default=None):
-    """Tries several possible key-paths against a dict and returns the first
-    that resolves, so a Trailhead schema change in one field doesn't break
-    everything else."""
     for path in paths:
         node = data
         ok = True
@@ -120,29 +108,68 @@ def _normalize_award(award):
 
 
 # ---------------------------------------------------------------------------
-# Low-level Aura calls (vendored + hardened; see module docstring for why)
+# Browser-driven session
 # ---------------------------------------------------------------------------
 
-def _get_fwuid():
-    resp = _SESSION.get(AURA_CONFIG_URL, timeout=15)
-    if not resp.ok:
+class BrowserSession:
+    """One real (headless) browser page, reused for the page load and every
+    Aura call for a single lookup, so everything shares the same cookies /
+    TLS+JS fingerprint that got past the bot check on the first request."""
+
+    def __init__(self):
+        self._pw = sync_playwright().start()
+        self._browser = self._pw.chromium.launch(headless=True)
+        self._page = self._browser.new_page(user_agent=_UA)
+
+    def get_profile_html(self, handle):
+        resp = self._page.goto(_build_profile_url(handle), wait_until="networkidle", timeout=30000)
+        status = resp.status if resp else None
+        return status, self._page.content()
+
+    def fetch_json(self, url, method="GET", form_data=None):
+        """Runs fetch() inside the page's own browser context (so it reuses
+        the session/cookies that already passed the bot check)."""
+        result = self._page.evaluate(
+            """
+            async ({url, method, formData}) => {
+                const opts = { method };
+                if (formData) {
+                    opts.body = new URLSearchParams(formData).toString();
+                    opts.headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+                }
+                const res = await fetch(url, opts);
+                const text = await res.text();
+                return { status: res.status, text };
+            }
+            """,
+            {"url": url, "method": method, "formData": form_data},
+        )
+        return result["status"], result["text"]
+
+    def close(self):
+        self._browser.close()
+        self._pw.stop()
+
+
+def _get_fwuid(session):
+    status, text = session.fetch_json(AURA_CONFIG_URL)
+    if status != 200:
         raise TrailheadError(
-            f"Trailhead's config endpoint returned HTTP {resp.status_code} "
-            f"instead of the expected JSON. Response started with: {_snippet(resp.text)}"
+            f"Trailhead's config endpoint returned HTTP {status} even from inside a "
+            f"real browser session. Response started with: {_snippet(text)}"
         )
     try:
-        return resp.json()["delegateVersion"]
+        return json.loads(text)["delegateVersion"]
     except Exception as exc:
         raise TrailheadError(
-            "Trailhead's config endpoint didn't return the JSON shape we expected "
-            f"(this usually means their frontend changed). Raw response: {_snippet(resp.text)}"
+            f"Trailhead's config endpoint didn't return the expected JSON. Raw: {_snippet(text)}"
         ) from exc
 
 
 class _AuraPayload:
-    def __init__(self):
+    def __init__(self, session):
         self.message = {"actions": []}
-        self.aura_context = {"fwuid": _get_fwuid(), "app": "c:ProfileApp"}
+        self.aura_context = {"fwuid": _get_fwuid(session), "app": "c:ProfileApp"}
         self.aura_token = "undefined"
         self.descriptor = "aura://ApexActionController/ACTION$execute"
 
@@ -160,7 +187,7 @@ class _AuraPayload:
         })
 
     @property
-    def data(self):
+    def form_data(self):
         return {
             "message": json.dumps(self.message),
             "aura.context": json.dumps(self.aura_context),
@@ -168,19 +195,15 @@ class _AuraPayload:
         }
 
 
-def _aura_call(payload):
-    resp = _SESSION.post(AURA_SERVICE_URL, data=payload.data, timeout=15)
-    if not resp.ok:
-        raise TrailheadError(
-            f"Trailhead's Aura endpoint returned HTTP {resp.status_code}. "
-            f"Response started with: {_snippet(resp.text)}"
-        )
+def _aura_call(session, payload):
+    status, text = session.fetch_json(AURA_SERVICE_URL, method="POST", form_data=payload.form_data)
+    if status != 200:
+        raise TrailheadError(f"Trailhead's Aura endpoint returned HTTP {status}. Response started with: {_snippet(text)}")
     try:
-        body = resp.json()
+        body = json.loads(text)
     except Exception as exc:
         raise TrailheadError(
-            "Trailhead's Aura endpoint didn't return JSON (possibly a login/consent "
-            f"page instead). Raw response started with: {_snippet(resp.text)}"
+            f"Trailhead's Aura endpoint didn't return JSON. Raw response: {_snippet(text)}"
         ) from exc
 
     actions = body.get("actions", [])
@@ -196,59 +219,60 @@ def _aura_call(payload):
         return json.loads(action["returnValue"]["returnValue"]["body"])
     except Exception as exc:
         raise TrailheadError(
-            "Trailhead's Aura response didn't have the expected structure. "
-            f"Raw action: {_snippet(json.dumps(action))}"
+            f"Trailhead's Aura response didn't have the expected structure. Raw action: {_snippet(json.dumps(action))}"
         ) from exc
 
 
-def fetch_user_id(handle):
-    resp = _SESSION.get(_build_profile_url(handle), timeout=15)
-    if not resp.ok:
+def fetch_user_id(session, handle):
+    status, html = session.get_profile_html(handle)
+    if status == 403:
         raise TrailheadError(
-            f"The profile page for '{handle}' returned HTTP {resp.status_code} "
-            f"(url: {_build_profile_url(handle)}). If this is a redirect to a login "
-            "page, the profile is likely private."
+            f"Trailhead blocked the profile page for '{handle}' with HTTP 403 even from a "
+            "real browser session. Either the profile is private, or Trailhead's bot "
+            "protection is fingerprinting headless Chrome specifically -- if this persists, "
+            "tell me and we'll try headless=False or a stealth plugin next."
         )
-    match = re.search(r"User\/(.*?)\\", resp.text)
+    if status and status >= 400:
+        raise TrailheadError(f"The profile page for '{handle}' returned HTTP {status}.")
+    match = re.search(r"User\/(.*?)\\", html)
     if not match:
         raise TrailheadError(
-            f"Couldn't find a user ID in the profile page for '{handle}'. Either the "
-            "profile is private, the handle is wrong, or Trailhead changed how it "
-            f"embeds this data. Page title/start: {_snippet(resp.text[:500])}"
+            f"Couldn't find a user ID in the profile page for '{handle}'. Either it's "
+            f"private, the handle is wrong, or Trailhead changed its markup. Page start: {_snippet(html[:500])}"
         )
     return match.group(1)
 
 
-def fetch_profile_data(handle):
-    resp = _SESSION.get(_build_profile_url(handle), timeout=15)
-    match = re.search(r'profileData = JSON.parse\("(.*?)"\)', resp.text)
+def fetch_profile_data(session, handle):
+    _, html = session.get_profile_html(handle)
+    match = re.search(r'profileData = JSON.parse\("(.*?)"\)', html)
     if not match:
         raise TrailheadError("Couldn't find embedded profile data on the page.")
     return json.loads(match.group(1).replace("\\", ""))
 
 
-def fetch_rank_data(handle, user_id):
-    payload = _AuraPayload()
+def fetch_rank_data(session, handle, user_id):
+    payload = _AuraPayload(session)
     payload.add_action("TrailheadProfileService", "fetchTrailheadData", {"userId": user_id})
-    body = _aura_call(payload)
+    body = _aura_call(session, payload)
     return body["value"][0]["ProfileCounts"][0]
 
 
-def fetch_awards(handle, user_id, limit=None):
+def fetch_awards(session, handle, user_id, limit=None):
     if limit is None:
-        limit = fetch_rank_data(handle, user_id).get("EarnedBadgeTotal", 0)
+        limit = fetch_rank_data(session, handle, user_id).get("EarnedBadgeTotal", 0)
 
     awards = []
     skip = 0
     while skip < limit:
-        payload = _AuraPayload()
+        payload = _AuraPayload(session)
         payload.add_action("TrailheadProfileService", "fetchTrailheadBadges", {
             "userId": user_id,
             "skip": skip,
             "perPage": min(limit - skip, 30),
             "filter": "All",
         })
-        body = _aura_call(payload)
+        body = _aura_call(session, payload)
         page_awards = body["value"][0]["EarnedAwards"]
         if not page_awards:
             break
@@ -260,24 +284,27 @@ def fetch_awards(handle, user_id, limit=None):
 def get_progress_data(raw_profile_input):
     """Returns (awards, profile_info, rank_info) for the given profile
     URL/handle. Raises TrailheadError with a detailed, user-facing message
-    (including HTTP status/response snippets) on failure -- if this fails,
-    the exception text itself should say why."""
+    on failure."""
     handle = extract_handle(raw_profile_input)
 
-    user_id = fetch_user_id(handle)  # let TrailheadError propagate with full detail
-
+    session = BrowserSession()
     try:
-        profile_data = fetch_profile_data(handle)
-    except Exception:
-        profile_data = {}
+        user_id = fetch_user_id(session, handle)
 
-    try:
-        rank_data = fetch_rank_data(handle, user_id) or {}
-    except Exception:
-        rank_data = {}
+        try:
+            profile_data = fetch_profile_data(session, handle)
+        except Exception:
+            profile_data = {}
 
-    raw_awards = fetch_awards(handle, user_id)  # let TrailheadError propagate with full detail
-    awards = [_normalize_award(a) for a in raw_awards]
+        try:
+            rank_data = fetch_rank_data(session, handle, user_id) or {}
+        except Exception:
+            rank_data = {}
+
+        raw_awards = fetch_awards(session, handle, user_id)
+        awards = [_normalize_award(a) for a in raw_awards]
+    finally:
+        session.close()
 
     profile_info = {
         "handle": handle,
