@@ -19,15 +19,15 @@
             },
             {
               "name": "Configure Businness Hours, Working Days, & Roles",
-              "url": null
+              "url": "https://trailhead.salesforce.com/content/learn/modules/company_wide_org_settings"
             },
             {
               "name": "Lightning App Builder",
-              "url": null
+              "url": "https://trailhead.salesforce.com/content/learn/modules/lightning_app_builder"
             },
             {
               "name": "Lightning Experience Customization",
-              "url": null
+              "url": "https://trailhead.salesforce.com/content/learn/modules/lex_customization"
             }
           ]
         },
@@ -45,7 +45,7 @@
             },
             {
               "name": "Permission Set Groups",
-              "url": null
+              "url": "https://trailhead.salesforce.com/content/learn/modules/permission-set-groups"
             }
           ]
         },
@@ -63,7 +63,7 @@
             },
             {
               "name": "Protect Your Data in Salesforce",
-              "url": null
+              "url": "https://trailhead.salesforce.com/content/learn/projects/protect-your-data-in-salesforce"
             }
           ]
         },
@@ -95,15 +95,15 @@
             },
             {
               "name": "Lightning Experience Customization",
-              "url": null
+              "url": "https://trailhead.salesforce.com/content/learn/modules/lex_customization"
             },
             {
               "name": "Lightning App Builder",
-              "url": null
+              "url": "https://trailhead.salesforce.com/content/learn/modules/lightning_app_builder"
             },
             {
               "name": "Formulas and Validations",
-              "url": null
+              "url": "https://trailhead.salesforce.com/content/learn/modules/point_click_business_logic"
             }
           ]
         },
@@ -121,15 +121,15 @@
             },
             {
               "name": "Set Up the Service Console",
-              "url": null
+              "url": "https://trailhead.salesforce.com/content/learn/projects/set-up-the-service-console"
             },
             {
               "name": "Create a Process for Managing Support Cases",
-              "url": null
+              "url": "https://trailhead.salesforce.com/content/learn/projects/create-a-process-for-managing-support-cases"
             },
             {
               "name": "Set Up Case Escalation and Entitlements",
-              "url": null
+              "url": "https://trailhead.salesforce.com/content/learn/projects/set-up-case-escalation-entitlements"
             }
           ]
         },
@@ -147,7 +147,7 @@
             },
             {
               "name": "AgentExchange Basics",
-              "url": null
+              "url": "https://trailhead.salesforce.com/content/learn/modules/appexchange_basics"
             }
           ]
         },
@@ -165,11 +165,11 @@
             },
             {
               "name": "Duplicate Management",
-              "url": null
+              "url": "https://trailhead.salesforce.com/content/learn/modules/sales_admin_duplicate_management"
             },
             {
               "name": "Import and Export with Data Management Tools",
-              "url": null
+              "url": "https://trailhead.salesforce.com/content/learn/projects/import-and-export-with-data-management-tools"
             }
           ]
         },
@@ -187,7 +187,7 @@
             },
             {
               "name": "Create Reports and Dashboards for Sales and Marketing Managers",
-              "url": null
+              "url": "https://trailhead.salesforce.com/content/learn/projects/create-reports-and-dashboards-for-sales-and-marketing-managers"
             }
           ]
         },
@@ -205,11 +205,11 @@
             },
             {
               "name": "Business Process Automation",
-              "url": null
+              "url": "https://trailhead.salesforce.com/content/learn/modules/business_process_automation"
             },
             {
               "name": "Record Triggered Flow",
-              "url": null
+              "url": "https://trailhead.salesforce.com/content/learn/modules/record-triggered-flows"
             }
           ]
         },
@@ -269,7 +269,7 @@
             },
             {
               "name": "Asynchronous Apex",
-              "url": null
+              "url": "https://trailhead.salesforce.com/content/learn/modules/asynchronous_apex"
             }
           ]
         },
@@ -287,11 +287,11 @@
             },
             {
               "name": "Apex Integration Services",
-              "url": null
+              "url": "https://trailhead.salesforce.com/content/learn/modules/apex_integration_services"
             },
             {
               "name": "Apex Testing",
-              "url": null
+              "url": "https://trailhead.salesforce.com/content/learn/modules/apex_testing"
             }
           ]
         }
@@ -344,7 +344,7 @@
             },
             {
               "name": "Get Started with Modern JavaScript Development",
-              "url": null
+              "url": "https://trailhead.salesforce.com/content/learn/modules/modern-javascript-development"
             }
           ]
         },
@@ -418,7 +418,7 @@
             },
             {
               "name": "Lightning Web Components Basics",
-              "url": null
+              "url": "https://trailhead.salesforce.com/content/learn/modules/lightning-web-components-basics"
             }
           ]
         },

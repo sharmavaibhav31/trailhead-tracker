@@ -12,7 +12,23 @@ only the standard library (difflib) to avoid an extra dependency.
 import difflib
 import re
 
+import json
+from pathlib import Path
+
 MATCH_THRESHOLD = 0.82
+SIGNATURES_PATH = Path(__file__).resolve().parent / "data" / "badge_signatures.json"
+
+
+def _load_signatures():
+    if SIGNATURES_PATH.exists():
+        try:
+            return json.loads(SIGNATURES_PATH.read_text(encoding="utf-8"))
+        except Exception:
+            return {}
+    return {}
+
+
+SIGNATURES = _load_signatures()
 
 
 def _normalize(text):
@@ -27,6 +43,27 @@ def _similarity(a, b):
 
 
 def _best_match(module_name, awards):
+    # 1. Exact Signature / Alias Lookup
+    norm_mod = _normalize(module_name)
+    sig = SIGNATURES.get(module_name)
+    if not sig:
+        for k, v in SIGNATURES.items():
+            if _normalize(k) == norm_mod:
+                sig = v
+                break
+
+    if sig:
+        alias_norms = {_normalize(a) for a in sig.get("aliases", [])}
+        alias_norms.add(_normalize(sig.get("badge_title", "")))
+
+        for award in awards:
+            title = award.get("title")
+            if not title:
+                continue
+            if _normalize(title) in alias_norms:
+                return 1.0, award
+
+    # 2. Fuzzy Matching Fallback
     best_score = 0.0
     best_award = None
     for award in awards:

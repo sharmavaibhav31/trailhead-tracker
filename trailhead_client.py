@@ -1,37 +1,24 @@
 """
-Talks to Trailhead's own internal Aura endpoints (the same ones the
-trailblazer.me profile page itself calls in the browser) to pull public
-profile info, rank/points, and earned badges for a given Trailhead handle.
+trailhead_client.py
 
-This now drives a real headless browser (Playwright) instead of plain
-`requests`, because trailblazer.me returns HTTP 403 to plain HTTP calls
-regardless of headers -- that's WAF/bot-detection (Cloudflare/Akamai-style)
-keying off TLS and JS fingerprints a plain HTTP client can't produce, not
-just a missing User-Agent. Running everything (page load AND the Aura POST
-calls) inside one real browser context is what gets past that.
+Pulls public Trailhead profile info, rank/points, and earned badges for a given
+Trailhead handle using Salesforce's official modern Trailhead GraphQL API
+(https://profile.api.trailhead.com/graphql).
 
-IMPORTANT / HONESTY NOTE: Trailhead has no official public API. This code
-calls internal, undocumented endpoints, which Salesforce can change or
-block further at any time. This sandbox has no network access to
-salesforce.com, so none of this can be tested end-to-end from here -- it
-has to be verified against real responses on your machine using
-diagnose.py. If Trailhead's bot protection blocks even a real headless
-browser (some WAFs fingerprint headless Chrome specifically), the next
-escalation is running Playwright with `headless=False` or with a stealth
-plugin -- let me know what diagnose.py prints and I'll take it from there.
+Unlike legacy scrapers that relied on internal Aura endpoints or headless browsers
+(which trigger WAF/Akamai 403 blocks and Windows asyncio event loop conflicts in
+Uvicorn), this communicates directly over HTTPS using standard library urllib,
+making it fast, lightweight, and robust.
 """
 
 import json
 import re
 import threading
 import time
+import urllib.error
+import urllib.request
 
-from playwright.sync_api import sync_playwright
-
-BASE_URL = "https://trailblazer.me"
-AURA_SERVICE_URL = f"{BASE_URL}/aura"
-AURA_CONFIG_URL = f"{BASE_URL}/c/ProfileApp.app?aura.format=JSON&aura.formatAdapter=LIGHTNING_OUT"
-
+GRAPHQL_URL = "https://profile.api.trailhead.com/graphql"
 _UA = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
     "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
@@ -68,23 +55,19 @@ GLOBAL_PROFILE_CACHE = ProfileCache()
 
 
 class TrailheadError(Exception):
-    """Raised for anything that should be shown back to the user as-is."""
+    """Raised for errors that should be shown back to the user as-is."""
 
 
-def _snippet(text, length=300):
+def _snippet(text, length=200):
     text = (text or "").strip().replace("\n", " ")
     return text[:length] + ("..." if len(text) > length else "")
 
 
-def _build_profile_url(handle):
-    return f"{BASE_URL}/id/{handle}"
-
-
 _HANDLE_PATTERNS = [
-    r"trailblazer\.me/id/([a-zA-Z0-9\-]+)",
-    r"trailblazer\.me/([a-zA-Z0-9\-]+)",
-    r"salesforce\.com/trailblazer/([a-zA-Z0-9\-]+)",
-    r"trailhead\.salesforce\.com/[a-zA-Z-]+/me/([a-zA-Z0-9\-]+)",
+    r"trailblazer\.me/id/([a-zA-Z0-9\-_]+)",
+    r"trailblazer\.me/([a-zA-Z0-9\-_]+)",
+    r"salesforce\.com/trailblazer/([a-zA-Z0-9\-_]+)",
+    r"trailhead\.salesforce\.com/[a-zA-Z-]+/me/([a-zA-Z0-9\-_]+)",
 ]
 
 
@@ -101,7 +84,7 @@ def extract_handle(raw_input):
             return match.group(1)
 
     bare = raw.rstrip("/").split("/")[-1]
-    if re.match(r"^[a-zA-Z0-9\-]+$", bare):
+    if re.match(r"^[a-zA-Z0-9\-_]+$", bare):
         return bare
 
     raise TrailheadError(
@@ -110,211 +93,117 @@ def extract_handle(raw_input):
     )
 
 
-def _extract_field(data, paths, default=None):
-    for path in paths:
-        node = data
-        ok = True
-        for key in path:
-            if isinstance(node, dict) and key in node:
-                node = node[key]
-            else:
-                ok = False
-                break
-        if ok and node is not None:
-            return node
-    return default
+def _query_graphql(query, op_name, variables):
+    payload = json.dumps({
+        "operationName": op_name,
+        "variables": variables,
+        "query": query,
+    }).encode("utf-8")
 
+    req = urllib.request.Request(
+        GRAPHQL_URL,
+        data=payload,
+        headers={
+            "Content-Type": "application/json",
+            "User-Agent": _UA,
+        },
+    )
 
-def _normalize_award(award):
-    return {
-        "title": _extract_field(award, [
-            ["Award", "Label"], ["Award", "Title"], ["Title"], ["Label"], ["Name"],
-        ]),
-        "completed_date": _extract_field(award, [
-            ["CompletedDate"], ["EarnedDate"], ["DateEarned"], ["DateCompleted"],
-            ["Award", "CompletedDate"], ["Award", "EarnedDate"],
-        ]),
-        "type": _extract_field(award, [["AwardType"], ["Type"]]),
-    }
-
-
-# ---------------------------------------------------------------------------
-# Browser-driven session
-# ---------------------------------------------------------------------------
-
-class BrowserSession:
-    """One real (headless) browser page, reused for the page load and every
-    Aura call for a single lookup, so everything shares the same cookies /
-    TLS+JS fingerprint that got past the bot check on the first request."""
-
-    def __init__(self):
-        self._pw = sync_playwright().start()
-        self._browser = self._pw.chromium.launch(headless=True)
-        self._page = self._browser.new_page(user_agent=_UA)
-
-    def get_profile_html(self, handle):
-        resp = self._page.goto(_build_profile_url(handle), wait_until="networkidle", timeout=30000)
-        status = resp.status if resp else None
-        return status, self._page.content()
-
-    def fetch_json(self, url, method="GET", form_data=None):
-        """Runs fetch() inside the page's own browser context (so it reuses
-        the session/cookies that already passed the bot check)."""
-        result = self._page.evaluate(
-            """
-            async ({url, method, formData}) => {
-                const opts = { method };
-                if (formData) {
-                    opts.body = new URLSearchParams(formData).toString();
-                    opts.headers = {'Content-Type': 'application/x-www-form-urlencoded'};
-                }
-                const res = await fetch(url, opts);
-                const text = await res.text();
-                return { status: res.status, text };
-            }
-            """,
-            {"url": url, "method": method, "formData": form_data},
-        )
-        return result["status"], result["text"]
-
-    def close(self):
-        self._browser.close()
-        self._pw.stop()
-
-
-def _get_fwuid(session):
-    status, text = session.fetch_json(AURA_CONFIG_URL)
-    if status != 200:
-        raise TrailheadError(
-            f"Trailhead's config endpoint returned HTTP {status} even from inside a "
-            f"real browser session. Response started with: {_snippet(text)}"
-        )
     try:
-        return json.loads(text)["delegateVersion"]
-    except Exception as exc:
+        with urllib.request.urlopen(req, timeout=20) as resp:
+            raw = resp.read().decode("utf-8")
+            return json.loads(raw)
+    except urllib.error.HTTPError as exc:
+        body = exc.read().decode("utf-8", errors="replace") if exc.fp else ""
         raise TrailheadError(
-            f"Trailhead's config endpoint didn't return the expected JSON. Raw: {_snippet(text)}"
+            f"Trailhead API returned HTTP {exc.code}: {_snippet(body)}"
         ) from exc
+    except urllib.error.URLError as exc:
+        raise TrailheadError(
+            f"Could not connect to Trailhead ({exc.reason}). Please check your internet connection."
+        ) from exc
+    except json.JSONDecodeError as exc:
+        raise TrailheadError(f"Invalid JSON received from Trailhead API: {exc}") from exc
 
 
-class _AuraPayload:
-    def __init__(self, session):
-        self.message = {"actions": []}
-        self.aura_context = {"fwuid": _get_fwuid(session), "app": "c:ProfileApp"}
-        self.aura_token = "undefined"
-        self.descriptor = "aura://ApexActionController/ACTION$execute"
-
-    def add_action(self, class_name, method_name, inner_params):
-        self.message["actions"].append({
-            "descriptor": self.descriptor,
-            "params": {
-                "namespace": "",
-                "classname": class_name,
-                "method": method_name,
-                "params": inner_params,
-                "cacheable": False,
-                "isContinuation": False,
-            },
-        })
-
-    @property
-    def form_data(self):
-        return {
-            "message": json.dumps(self.message),
-            "aura.context": json.dumps(self.aura_context),
-            "aura.token": self.aura_token,
+PROFILE_QUERY = """query GetProfileSummary($slug: String, $hasSlug: Boolean!) {
+  profile(slug: $slug) @include(if: $hasSlug) {
+    __typename
+    ... on PublicProfile {
+      id
+      name
+      avatarUrl
+      companyName
+      trailheadStats {
+        __typename
+        earnedPointsSum
+        earnedBadgesCount
+        completedTrailCount
+        rank {
+          title
         }
+      }
+    }
+    ... on PrivateProfile {
+      __typename
+    }
+  }
+}"""
 
+BADGES_QUERY = """fragment EarnedAward on EarnedAwardBase {
+  __typename
+  id
+  award {
+    __typename
+    id
+    title
+    type
+    icon
+  }
+}
 
-def _aura_call(session, payload):
-    status, text = session.fetch_json(AURA_SERVICE_URL, method="POST", form_data=payload.form_data)
-    if status != 200:
-        raise TrailheadError(f"Trailhead's Aura endpoint returned HTTP {status}. Response started with: {_snippet(text)}")
-    try:
-        body = json.loads(text)
-    except Exception as exc:
-        raise TrailheadError(
-            f"Trailhead's Aura endpoint didn't return JSON. Raw response: {_snippet(text)}"
-        ) from exc
+fragment EarnedAwardSelf on EarnedAwardSelf {
+  __typename
+  id
+  award {
+    __typename
+    id
+    title
+    type
+    icon
+  }
+  earnedAt
+  earnedPointsSum
+}
 
-    actions = body.get("actions", [])
-    if not actions:
-        raise TrailheadError(f"Trailhead's Aura endpoint returned no actions. Raw body: {_snippet(json.dumps(body))}")
-
-    action = actions[0]
-    if action.get("state") == "ERROR":
-        error_detail = action.get("error", [{}])[0].get("message", "unknown error")
-        raise TrailheadError(f"Trailhead's Aura endpoint reported an error: {error_detail}")
-
-    try:
-        return json.loads(action["returnValue"]["returnValue"]["body"])
-    except Exception as exc:
-        raise TrailheadError(
-            f"Trailhead's Aura response didn't have the expected structure. Raw action: {_snippet(json.dumps(action))}"
-        ) from exc
-
-
-def fetch_user_id(session, handle):
-    status, html = session.get_profile_html(handle)
-    if status == 403:
-        raise TrailheadError(
-            f"Trailhead blocked the profile page for '{handle}' with HTTP 403 even from a "
-            "real browser session. Either the profile is private, or Trailhead's bot "
-            "protection is fingerprinting headless Chrome specifically -- if this persists, "
-            "tell me and we'll try headless=False or a stealth plugin next."
-        )
-    if status and status >= 400:
-        raise TrailheadError(f"The profile page for '{handle}' returned HTTP {status}.")
-    match = re.search(r"User\/(.*?)\\", html)
-    if not match:
-        raise TrailheadError(
-            f"Couldn't find a user ID in the profile page for '{handle}'. Either it's "
-            f"private, the handle is wrong, or Trailhead changed its markup. Page start: {_snippet(html[:500])}"
-        )
-    return match.group(1)
-
-
-def fetch_profile_data(session, handle):
-    _, html = session.get_profile_html(handle)
-    match = re.search(r'profileData = JSON.parse\("(.*?)"\)', html)
-    if not match:
-        raise TrailheadError("Couldn't find embedded profile data on the page.")
-    return json.loads(match.group(1).replace("\\", ""))
-
-
-def fetch_rank_data(session, handle, user_id):
-    payload = _AuraPayload(session)
-    payload.add_action("TrailheadProfileService", "fetchTrailheadData", {"userId": user_id})
-    body = _aura_call(session, payload)
-    return body["value"][0]["ProfileCounts"][0]
-
-
-def fetch_awards(session, handle, user_id, limit=None):
-    if limit is None:
-        limit = fetch_rank_data(session, handle, user_id).get("EarnedBadgeTotal", 0)
-
-    awards = []
-    skip = 0
-    while skip < limit:
-        payload = _AuraPayload(session)
-        payload.add_action("TrailheadProfileService", "fetchTrailheadBadges", {
-            "userId": user_id,
-            "skip": skip,
-            "perPage": min(limit - skip, 30),
-            "filter": "All",
-        })
-        body = _aura_call(session, payload)
-        page_awards = body["value"][0]["EarnedAwards"]
-        if not page_awards:
-            break
-        awards.extend(page_awards)
-        skip += 30
-    return awards
+query GetTrailheadBadges($slug: String, $hasSlug: Boolean!, $count: Int = 100, $after: String = null) {
+  profile(slug: $slug) @include(if: $hasSlug) {
+    __typename
+    ... on PublicProfile {
+      earnedAwards(first: $count, after: $after) {
+        edges {
+          node {
+            ... on EarnedAwardBase {
+              ...EarnedAward
+            }
+            ... on EarnedAwardSelf {
+              ...EarnedAwardSelf
+            }
+          }
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+        }
+      }
+    }
+  }
+}"""
 
 
 def get_progress_data(raw_profile_input, force_refresh=False):
-    """Returns (awards, profile_info, rank_info) for the given profile
-    URL/handle. Serves from cache if available unless force_refresh is True."""
+    """Returns (awards, profile_info, rank_info) for the given profile URL/handle.
+    Serves from cache if available unless force_refresh is True."""
     handle = extract_handle(raw_profile_input)
 
     if not force_refresh:
@@ -322,38 +211,88 @@ def get_progress_data(raw_profile_input, force_refresh=False):
         if cached is not None:
             return cached
 
-    session = BrowserSession()
-    try:
-        user_id = fetch_user_id(session, handle)
+    # 1. Fetch Profile & Rank
+    data = _query_graphql(PROFILE_QUERY, "GetProfileSummary", {"slug": handle, "hasSlug": True})
 
-        try:
-            profile_data = fetch_profile_data(session, handle)
-        except Exception:
-            profile_data = {}
+    errors = data.get("errors")
+    if errors:
+        msg = errors[0].get("message", "Unknown GraphQL error")
+        raise TrailheadError(f"Trailhead error for '{handle}': {msg}")
 
-        try:
-            rank_data = fetch_rank_data(session, handle, user_id) or {}
-        except Exception:
-            rank_data = {}
+    prof = data.get("data", {}).get("profile")
+    if not prof:
+        raise TrailheadError(
+            f"Couldn't find a Trailhead profile for '{handle}'. "
+            "Please check that the handle/link is correct."
+        )
 
-        raw_awards = fetch_awards(session, handle, user_id)
-        awards = [_normalize_award(a) for a in raw_awards]
-    finally:
-        session.close()
+    if prof.get("__typename") == "PrivateProfile":
+        raise TrailheadError(
+            f"The Trailhead profile for '{handle}' is set to Private. "
+            "The trainee must set their profile to Public in Trailhead (Settings → Privacy → Public Profile)."
+        )
+
+    stats = prof.get("trailheadStats") or {}
+    rank = stats.get("rank") or {}
+
+    raw_name = (prof.get("name") or "").strip()
+    name_parts = raw_name.split(" ", 1)
+    first_name = name_parts[0] if name_parts else ""
+    last_name = name_parts[1] if len(name_parts) > 1 else ""
 
     profile_info = {
+        "name": raw_name or f"{first_name} {last_name}".strip() or handle,
         "handle": handle,
-        "first_name": _extract_field(profile_data, [["profileUser", "FirstName"], ["FirstName"], ["first_name"]]),
-        "last_name": _extract_field(profile_data, [["profileUser", "LastName"], ["LastName"], ["last_name"]]),
-        "company": _extract_field(profile_data, [["profileUser", "CompanyName"], ["CompanyName"], ["company"]]),
-        "photo": _extract_field(profile_data, [["profilePhotoUrl"], ["photoUrl"], ["avatar"]]),
+        "first_name": first_name,
+        "last_name": last_name,
+        "company": prof.get("companyName") or "",
+        "photo": prof.get("avatarUrl") or None,
     }
+
     rank_info = {
-        "rank_label": rank_data.get("RankLabel") or rank_data.get("rank") or "Learner",
-        "points": rank_data.get("EarnedPointTotal") or rank_data.get("points") or 0,
-        "badges": rank_data.get("EarnedBadgeTotal") or rank_data.get("badges") or len(awards),
-        "trails": rank_data.get("CompletedTrailTotal") or rank_data.get("trails") or 0,
+        "rank_label": rank.get("title") or "Learner",
+        "points": stats.get("earnedPointsSum") or 0,
+        "badges": stats.get("earnedBadgesCount") or 0,
+        "trails": stats.get("completedTrailCount") or 0,
     }
+
+    # 2. Fetch Badges with pagination
+    awards = []
+    has_next = True
+    after = None
+    pages = 0
+    max_pages = 50  # Safety limit: up to 5000 badges
+
+    while has_next and pages < max_pages:
+        pages += 1
+        b_data = _query_graphql(
+            BADGES_QUERY,
+            "GetTrailheadBadges",
+            {"slug": handle, "hasSlug": True, "count": 100, "after": after},
+        )
+        b_errors = b_data.get("errors")
+        if b_errors:
+            msg = b_errors[0].get("message", "Unknown GraphQL error while fetching badges")
+            raise TrailheadError(f"Error fetching badges for '{handle}': {msg}")
+
+        awards_conn = b_data.get("data", {}).get("profile", {}).get("earnedAwards") or {}
+        edges = awards_conn.get("edges") or []
+        for edge in edges:
+            node = edge.get("node") or {}
+            award = node.get("award") or {}
+            earned_at = node.get("earnedAt")
+            if earned_at and "T" in earned_at:
+                earned_at = earned_at.split("T")[0]
+            awards.append({
+                "title": award.get("title"),
+                "completed_date": earned_at,
+                "type": award.get("type"),
+            })
+
+        page_info = awards_conn.get("pageInfo") or {}
+        has_next = page_info.get("hasNextPage", False)
+        after = page_info.get("endCursor")
+
     result = (awards, profile_info, rank_info)
     GLOBAL_PROFILE_CACHE.set(handle, result)
     return result

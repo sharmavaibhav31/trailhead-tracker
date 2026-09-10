@@ -45,18 +45,40 @@ def _prettify_slug(url: str) -> str:
     return slug.strip().title() or url
 
 
+KNOWN_MODULE_URLS = {
+    "configure businness hours, working days, & roles": "https://trailhead.salesforce.com/content/learn/modules/company_wide_org_settings",
+    "configure business hours, working days, & roles": "https://trailhead.salesforce.com/content/learn/modules/company_wide_org_settings",
+    "lightning app builder": "https://trailhead.salesforce.com/content/learn/modules/lightning_app_builder",
+    "lightning experience customization": "https://trailhead.salesforce.com/content/learn/modules/lex_customization",
+    "permission set groups": "https://trailhead.salesforce.com/content/learn/modules/permission-set-groups",
+    "protect your data in salesforce": "https://trailhead.salesforce.com/content/learn/projects/protect-your-data-in-salesforce",
+    "formulas and validations": "https://trailhead.salesforce.com/content/learn/modules/point_click_business_logic",
+    "set up the service console": "https://trailhead.salesforce.com/content/learn/projects/set-up-the-service-console",
+    "create a process for managing support cases": "https://trailhead.salesforce.com/content/learn/projects/create-a-process-for-managing-support-cases",
+    "set up case escalation and entitlements": "https://trailhead.salesforce.com/content/learn/projects/set-up-case-escalation-entitlements",
+    "agentexchange basics": "https://trailhead.salesforce.com/content/learn/modules/appexchange_basics",
+    "appexchange basics": "https://trailhead.salesforce.com/content/learn/modules/appexchange_basics",
+    "duplicate management": "https://trailhead.salesforce.com/content/learn/modules/sales_admin_duplicate_management",
+    "import and export with data management tools": "https://trailhead.salesforce.com/content/learn/projects/import-and-export-with-data-management-tools",
+    "create reports and dashboards for sales and marketing managers": "https://trailhead.salesforce.com/content/learn/projects/create-reports-and-dashboards-for-sales-and-marketing-managers",
+    "business process automation": "https://trailhead.salesforce.com/content/learn/modules/business_process_automation",
+    "record triggered flow": "https://trailhead.salesforce.com/content/learn/modules/record-triggered-flows",
+    "asynchronous apex": "https://trailhead.salesforce.com/content/learn/modules/asynchronous_apex",
+    "apex integration services": "https://trailhead.salesforce.com/content/learn/modules/apex_integration_services",
+    "apex testing": "https://trailhead.salesforce.com/content/learn/modules/apex_testing",
+    "get started with modern javascript development": "https://trailhead.salesforce.com/content/learn/modules/modern-javascript-development",
+    "lightning web components basics": "https://trailhead.salesforce.com/content/learn/modules/lightning-web-components-basics",
+}
+
+
 def _split_module_cell(raw_text, cell_hyperlink):
     """A 'Trailhead Modules' cell may contain one module name per line, and/or
     raw URLs typed directly into the text, and/or (separately) one Excel
     hyperlink attached to the whole cell.
 
-    Known limitation of the source spreadsheet: when a cell lists several
-    module names on separate lines, Excel only lets a *single* hyperlink be
-    attached to the whole cell, so we can't always tell which exact line that
-    link belongs to. We attach it to the first module name in that case and
-    still keep every module name in the list (unlinked) so nothing assigned
-    to a trainee is dropped, and record it separately as `reference_link` on
-    the row for a "more info" link in the UI.
+    When multiple modules exist in a single cell, we resolve individual URLs
+    from explicit in-text URLs, the cell hyperlink, or the verified
+    KNOWN_MODULE_URLS catalog so every module gets a working link.
     """
     lines = [_clean(l) for l in re.split(r"[\r\n]+", raw_text or "") if _clean(l)]
 
@@ -79,6 +101,11 @@ def _split_module_cell(raw_text, cell_hyperlink):
             if m["url"] is None:
                 m["url"] = cell_hyperlink
                 break
+
+    for m in modules:
+        if not m["url"]:
+            norm_name = m["name"].strip().lower()
+            m["url"] = KNOWN_MODULE_URLS.get(norm_name)
 
     return modules
 

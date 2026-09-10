@@ -34,12 +34,9 @@ def _load_calendar():
     return json.loads(CALENDAR_PATH.read_text(encoding="utf-8"))
 
 
-CALENDAR = _load_calendar()
-
-
 @app.get("/api/calendar")
 def get_calendar():
-    return CALENDAR
+    return _load_calendar()
 
 
 @app.get("/api/progress")
@@ -56,7 +53,7 @@ def get_progress(
         except TrailheadError as exc:
             raise HTTPException(status_code=400, detail=str(exc))
 
-    result = match_calendar_to_awards(CALENDAR, awards)
+    result = match_calendar_to_awards(_load_calendar(), awards)
     result["profile"] = profile_info
     result["rank"] = rank_info
     return result
@@ -64,7 +61,7 @@ def get_progress(
 
 @app.get("/api/health")
 def health():
-    return {"status": "ok", "phases_loaded": len(CALENDAR.get("phases", []))}
+    return {"status": "ok", "phases_loaded": len(_load_calendar().get("phases", []))}
 
 
 # Static frontend -- keep this mounted last so it doesn't shadow /api/*.

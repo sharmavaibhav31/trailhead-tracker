@@ -1,0 +1,359 @@
+{
+  "Company-Wide Org Settings": {
+    "badge_title": "Company-Wide Org Settings",
+    "type": "MODULE",
+    "aliases": [
+      "Company-Wide Org Settings"
+    ]
+  },
+  "Configure Businness Hours, Working Days, & Roles": {
+    "badge_title": "Company-Wide Org Settings",
+    "type": "MODULE",
+    "aliases": [
+      "Company-Wide Org Settings",
+      "Set Up Case Escalation and Entitlements"
+    ]
+  },
+  "Lightning App Builder": {
+    "badge_title": "Lightning App Builder",
+    "type": "MODULE",
+    "aliases": [
+      "Lightning App Builder"
+    ]
+  },
+  "Lightning Experience Customization": {
+    "badge_title": "Lightning Experience Customization",
+    "type": "MODULE",
+    "aliases": [
+      "Lightning Experience Customization"
+    ]
+  },
+  "User Management": {
+    "badge_title": "User Management",
+    "type": "MODULE",
+    "aliases": [
+      "User Management",
+      "Prepare Your Salesforce Org for Users"
+    ]
+  },
+  "Permission Set Groups": {
+    "badge_title": "Permission Set Groups",
+    "type": "MODULE",
+    "aliases": [
+      "Permission Set Groups"
+    ]
+  },
+  "Data Security": {
+    "badge_title": "Data Security",
+    "type": "MODULE",
+    "aliases": [
+      "Data Security"
+    ]
+  },
+  "Protect Your Data in Salesforce": {
+    "badge_title": "Protect Your Data in Salesforce",
+    "type": "PROJECT",
+    "aliases": [
+      "Protect Your Data in Salesforce"
+    ]
+  },
+  "Data Modeling": {
+    "badge_title": "Data Modeling",
+    "type": "MODULE",
+    "aliases": [
+      "Data Modeling"
+    ]
+  },
+  "Customize an Org to Support a New Business Unit": {
+    "badge_title": "Customize an Org to Support a New Business Unit",
+    "type": "PROJECT",
+    "aliases": [
+      "Customize an Org to Support a New Business Unit"
+    ]
+  },
+  "Formulas and Validations": {
+    "badge_title": "Formulas and Validations",
+    "type": "MODULE",
+    "aliases": [
+      "Formulas and Validations"
+    ]
+  },
+  "Agentforce Service Administration": {
+    "badge_title": "Agentforce Service Administration",
+    "type": "MODULE",
+    "aliases": [
+      "Agentforce Service Administration"
+    ]
+  },
+  "Set Up the Service Console": {
+    "badge_title": "Set Up the Service Console",
+    "type": "PROJECT",
+    "aliases": [
+      "Set Up the Service Console"
+    ]
+  },
+  "Create a Process for Managing Support Cases": {
+    "badge_title": "Create a Process for Managing Support Cases",
+    "type": "PROJECT",
+    "aliases": [
+      "Create a Process for Managing Support Cases"
+    ]
+  },
+  "Set Up Case Escalation and Entitlements": {
+    "badge_title": "Set Up Case Escalation and Entitlements",
+    "type": "PROJECT",
+    "aliases": [
+      "Set Up Case Escalation and Entitlements"
+    ]
+  },
+  "Chatter Administration for Lightning Experience": {
+    "badge_title": "Chatter Administration for Lightning Experience",
+    "type": "MODULE",
+    "aliases": [
+      "Chatter Administration for Lightning Experience"
+    ]
+  },
+  "AgentExchange Basics": {
+    "badge_title": "AgentExchange Basics",
+    "type": "MODULE",
+    "aliases": [
+      "AgentExchange Basics",
+      "AppExchange Basics"
+    ]
+  },
+  "Data Management": {
+    "badge_title": "Data Management",
+    "type": "MODULE",
+    "aliases": [
+      "Data Management"
+    ]
+  },
+  "Duplicate Management": {
+    "badge_title": "Duplicate Management",
+    "type": "MODULE",
+    "aliases": [
+      "Duplicate Management"
+    ]
+  },
+  "Import and Export with Data Management Tools": {
+    "badge_title": "Import and Export with Data Management Tools",
+    "type": "PROJECT",
+    "aliases": [
+      "Import and Export with Data Management Tools"
+    ]
+  },
+  "Reports & Dashboards for Lightning Experience": {
+    "badge_title": "Reports & Dashboards for Lightning Experience",
+    "type": "MODULE",
+    "aliases": [
+      "Reports & Dashboards for Lightning Experience"
+    ]
+  },
+  "Create Reports and Dashboards for Sales and Marketing Managers": {
+    "badge_title": "Create Reports and Dashboards for Sales and Marketing Managers",
+    "type": "PROJECT",
+    "aliases": [
+      "Create Reports and Dashboards for Sales and Marketing Managers"
+    ]
+  },
+  "Flow Builder Basics": {
+    "badge_title": "Flow Builder Basics",
+    "type": "MODULE",
+    "aliases": [
+      "Flow Builder Basics"
+    ]
+  },
+  "Business Process Automation": {
+    "badge_title": "Business Process Automation",
+    "type": "MODULE",
+    "aliases": [
+      "Business Process Automation",
+      "Build a Discount Approval Process",
+      "Approve Records with Approval Processes"
+    ]
+  },
+  "Record Triggered Flow": {
+    "badge_title": "Record Triggered Flow",
+    "type": "MODULE",
+    "aliases": [
+      "Record Triggered Flow",
+      "Record-Triggered Flows",
+      "Create a Screen Flow That Checks for Duplicates"
+    ]
+  },
+  "Agentforce 360 Platform Basics": {
+    "badge_title": "Agentforce 360 Platform Basics",
+    "type": "MODULE",
+    "aliases": [
+      "Agentforce 360 Platform Basics"
+    ]
+  },
+  "Apex Basics & Database": {
+    "badge_title": "Apex Basics & Database",
+    "type": "MODULE",
+    "aliases": [
+      "Apex Basics & Database"
+    ]
+  },
+  "SOQL, SOSL, and DML Refresher - Prepare for PD1 Exam": {
+    "badge_title": "Cert Prep: Platform Developer: Automation and Logic",
+    "type": "MODULE",
+    "aliases": [
+      "Cert Prep: Platform Developer: Automation and Logic",
+      "SOQL, SOSL, and DML Refresher - Prepare for PD1 Exam"
+    ]
+  },
+  "Apex Triggers": {
+    "badge_title": "Apex Triggers",
+    "type": "MODULE",
+    "aliases": [
+      "Apex Triggers"
+    ]
+  },
+  "Asynchronous Apex": {
+    "badge_title": "Asynchronous Apex",
+    "type": "MODULE",
+    "aliases": [
+      "Asynchronous Apex"
+    ]
+  },
+  "Cert Prep: Platform Developer: Testing, Debugging, and Deployment": {
+    "badge_title": "Cert Prep: Platform Developer: Testing, Debugging, and Deployment",
+    "type": "MODULE",
+    "aliases": [
+      "Cert Prep: Platform Developer: Testing, Debugging, and Deployment"
+    ]
+  },
+  "Apex Integration Services": {
+    "badge_title": "Apex Integration Services",
+    "type": "MODULE",
+    "aliases": [
+      "Apex Integration Services"
+    ]
+  },
+  "Apex Testing": {
+    "badge_title": "Apex Testing",
+    "type": "MODULE",
+    "aliases": [
+      "Apex Testing"
+    ]
+  },
+  "JavaScript Skills for Salesforce Developers": {
+    "badge_title": "JavaScript Skills for Salesforce Developers",
+    "type": "MODULE",
+    "aliases": [
+      "JavaScript Skills for Salesforce Developers",
+      "JavaScript Essentials for Salesforce Developers"
+    ]
+  },
+  "Get Started with Modern JavaScript Development": {
+    "badge_title": "Get Started with Modern JavaScript Development",
+    "type": "MODULE",
+    "aliases": [
+      "Get Started with Modern JavaScript Development"
+    ]
+  },
+  "Coding for Web Accessibility": {
+    "badge_title": "Coding for Web Accessibility",
+    "type": "MODULE",
+    "aliases": [
+      "Coding for Web Accessibility"
+    ]
+  },
+  "Lightning Web Component Troubleshooting": {
+    "badge_title": "Lightning Web Component Troubleshooting",
+    "type": "MODULE",
+    "aliases": [
+      "Lightning Web Component Troubleshooting"
+    ]
+  },
+  "Quick Start: Lightning Web Components": {
+    "badge_title": "Quick Start: Lightning Web Components",
+    "type": "PROJECT",
+    "aliases": [
+      "Quick Start: Lightning Web Components"
+    ]
+  },
+  "Lightning Web Components Basics": {
+    "badge_title": "Lightning Web Components Basics",
+    "type": "MODULE",
+    "aliases": [
+      "Lightning Web Components Basics"
+    ]
+  },
+  "Handle Events in LWC": {
+    "badge_title": "Handle Events in LWC",
+    "type": "MODULE",
+    "aliases": [
+      "Handle Events in LWC",
+      "Handle Events in Lightning Web Components"
+    ]
+  },
+  "Lightning Web Components and Salesforce Data": {
+    "badge_title": "Lightning Web Components and Salesforce Data",
+    "type": "MODULE",
+    "aliases": [
+      "Lightning Web Components and Salesforce Data"
+    ]
+  },
+  "Design and Implement AI Agents with Agentforce": {
+    "badge_title": "Design and Implement AI Agents with Agentforce",
+    "type": "TRAIL",
+    "aliases": [
+      "Design and Implement AI Agents with Agentforce"
+    ]
+  },
+  "Get Started with Prompts and Prompt Builder": {
+    "badge_title": "Get Started with Prompts and Prompt Builder",
+    "type": "TRAIL",
+    "aliases": [
+      "Get Started with Prompts and Prompt Builder",
+      "Get Started with Prompts and Prompt Studio"
+    ]
+  },
+  "Unlock your Data with Data Cloud": {
+    "badge_title": "Unlock your Data with Data Cloud",
+    "type": "TRAIL",
+    "aliases": [
+      "Unlock your Data with Data Cloud"
+    ]
+  },
+  "Agentforce Testing Tools and Strategies": {
+    "badge_title": "Agentforce Testing Tools and Strategies",
+    "type": "MODULE",
+    "aliases": [
+      "Agentforce Testing Tools and Strategies"
+    ]
+  },
+  "Unstructured Data In Data Cloud": {
+    "badge_title": "Unstructured Data in Data 360",
+    "type": "PROJECT",
+    "aliases": [
+      "Unstructured Data in Data 360",
+      "Unstructured Data In Data Cloud"
+    ]
+  },
+  "Advanced Rag With Data 360 And Agentforce": {
+    "badge_title": "Advanced RAG with Data 360 and Agentforce",
+    "type": "MODULE",
+    "aliases": [
+      "Advanced RAG with Data 360 and Agentforce",
+      "Advanced Rag With Data 360 And Agentforce"
+    ]
+  },
+  "Agentforce Agent Testing": {
+    "badge_title": "Agentforce Agent Testing",
+    "type": "MODULE",
+    "aliases": [
+      "Agentforce Agent Testing"
+    ]
+  },
+  "Agentforce Testing Tools And Strategies": {
+    "badge_title": "Agentforce Testing Tools and Strategies",
+    "type": "MODULE",
+    "aliases": [
+      "Agentforce Testing Tools and Strategies",
+      "Agentforce Testing Tools And Strategies"
+    ]
+  }
+}
